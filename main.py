@@ -7,7 +7,7 @@ from agents.image_analysis_agents.time_analysis import TimeAnalysisAgent
 from agents.image_analysis_agents.scene_analysis import SceneAnalysisAgent
 from agents.audio_analysis_agents.genre_prediction import GenrePredictionAgent
 from tools.string_to_json import convert_to_json  # Import the conversion tool
-
+from tools.get_values_genre import consolidate_jsons
 # Directory to save and load analysis JSONs
 SAVE_DIR = "analysis_results"
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -32,55 +32,42 @@ def main():
     mood_agent = MoodAnalysisAgent()
     time_agent = TimeAnalysisAgent()
     scene_agent = SceneAnalysisAgent()
-    genre_predictor = GenrePredictionAgent()
+    genre_predicting_agent = GenrePredictionAgent()
 
     # Path to your image
-    image_path = "images/brown-barber.jpg"
+    image_path = "images/jordan.jpg"
 
     # Analyze image or load from files
     print("🔍 Object Analysis:")
-    object_analysis_json = load_json("object_analysis.json") or convert_to_json(object_agent.analyze_objects(image_path))
-    if object_analysis_json:
-        save_json(object_analysis_json, "object_analysis.json")
+    object_analysis_json = convert_to_json(object_agent.analyze_objects(image_path))
     print(object_analysis_json)
+    print("--------------------------------")
 
-    print("\n🎨 Color Analysis:")
-    color_analysis_json = load_json("color_analysis.json") or convert_to_json(color_agent.analyze_colors(image_path))
-    if color_analysis_json:
-        save_json(color_analysis_json, "color_analysis.json")
+    print("🎨 Color Analysis:")
+    color_analysis_json = convert_to_json(color_agent.analyze_colors(image_path))
     print(color_analysis_json)
+    print("--------------------------------")
 
-    print("\n😊 Mood Analysis:")
-    mood_analysis_json = load_json("mood_analysis.json") or convert_to_json(mood_agent.analyze_mood(image_path))
-    if mood_analysis_json:
-        save_json(mood_analysis_json, "mood_analysis.json")
-    print(mood_analysis_json)
-
-    print("\n⏰ Time Analysis:")
-    time_analysis_json = load_json("time_analysis.json") or convert_to_json(time_agent.analyze_time(image_path))
-    if time_analysis_json:
-        save_json(time_analysis_json, "time_analysis.json")
-    print(time_analysis_json)
-
-    print("\n🏠 Scene Analysis:")
-    scene_analysis_json = load_json("scene_analysis.json") or convert_to_json(scene_agent.analyze_scene(image_path))
-    if scene_analysis_json:
-        save_json(scene_analysis_json, "scene_analysis.json")
+    print("🏞️ Scene Analysis:")
+    scene_analysis_json = convert_to_json(scene_agent.analyze_scene(image_path))
     print(scene_analysis_json)
+    print("--------------------------------")
 
-    # Combine analysis results (assuming successful conversions)
-    analysis_jsons = [
-        object_analysis_json,
-        color_analysis_json,
-        mood_analysis_json,
-        time_analysis_json,
-        scene_analysis_json,
-    ]
+    print("😊 Mood Analysis:")
+    mood_analysis_json = convert_to_json(mood_agent.analyze_mood(image_path))
+    print(mood_analysis_json)
+    print("--------------------------------")
 
-    # Predict genres with confidence levels
-    genre_confidences = genre_predictor.predict_genres_with_confidence(analysis_jsons)
-    print("\n🎵 Genre Prediction with Confidence Levels:")
-    print(genre_confidences)
+    print("🕒 Time Analysis:")
+    time_analysis_json = convert_to_json(time_agent.analyze_time(image_path))
+    print(time_analysis_json)
+    print("--------------------------------")
+
+    list_of_jsons = [object_analysis_json, color_analysis_json, scene_analysis_json, mood_analysis_json, time_analysis_json]
+    genre_prediction_json = consolidate_jsons(list_of_jsons)
+    print(genre_prediction_json)
+    print("--------------------------------")
+
 
 if __name__ == "__main__":
     main()

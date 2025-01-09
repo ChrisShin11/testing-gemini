@@ -4,7 +4,7 @@ class ObjectDetectionAgent(ImageAnalysisAgent):
     def analyze_objects(self, image_path):
         prompt = """
         Analyze this image and identify:
-        1. Main objects present
+        1. Main objects present. Identify if there are any famous people or places.
         2. Their spatial relationships
         3. Any notable interactions between objects
         Provide the output in a structured JSON format like this:
